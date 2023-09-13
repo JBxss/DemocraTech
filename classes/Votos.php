@@ -38,18 +38,46 @@ class Votos
             ));
         } else {
 
-
-            // Verificar si el votante y el candidato existen en la base de datos
+            // Realiza validaciones
             $queryVotante= $db->prepare("SELECT * FROM tbl_votantes WHERE numero_votante = :numeroVotante");
             $queryVotante->execute([":numeroVotante" => $numeroVotante]);
             $dataVotante = $queryVotante->fetch();
+
+            $queryCandidato= $db->prepare("SELECT * FROM tbl_candidatos WHERE numero_candidato = :numeroCandidato");
+            $queryCandidato->execute([":numeroCandidato" => $numeroCandidato]);
+            $dataCandidato = $queryCandidato->fetch();
+
+            $queryVoto= $db->prepare("SELECT * FROM tbl_votos WHERE numero_votante = :numeroVotante");
+            $queryVoto->execute([":numeroVotante" => $numeroVotante]);
+            $dataVoto = $queryVoto->fetch();
     
-            if (!$dataVotante) {
+            // Verificar si el votante y el candidato existen en la base de datos
+            if (!$dataVotante || !$dataCandidato) {
                 Flight::halt(404, json_encode([
-                    "error" => "Votante no encontrado",
+                    "error" => "El votante o el candidato no existen",
                     "status" => "error",
                     "code" => "404"
                 ]));
+            }
+
+            // Verificar si el votante ya ha realizado un voto
+            if ($dataVoto) {
+                Flight::halt(400, json_encode([
+                    "error" => "El votante ya ha realizado un voto",
+                    "status" => "error",
+                    "code" => "400"
+                ]));
+            }
+
+            // Verificar si el votante y el candidato pertenecen a la misma localidad
+            if ($dataVotante['localidad_votante'] !== $dataCandidato['localidad_candidato']) {
+                Flight::halt(400, json_encode(
+                    [
+                        "error" => "El votante y el candidato pertenecen a localidades diferentes",
+                        "status" => "Error",
+                        "code" => "400"
+                    ]
+                ));
             }
 
             $query = $db->prepare("INSERT INTO tbl_votos (id_voto, numero_candidato, numero_votante) VALUES (:id, :numeroCandidato, :numeroVotante)");
