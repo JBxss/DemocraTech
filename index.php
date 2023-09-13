@@ -12,5 +12,6 @@ $votantes = new Votantes();
 $votos = new Votos();
 
 Flight::route('POST /votantes', [$votantes, 'resgistrarVotante']);
+Flight::route('POST /candidatos', [$candidatos, 'resgistrarCandidato']);
 
 Flight::start();
