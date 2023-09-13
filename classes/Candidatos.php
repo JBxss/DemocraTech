@@ -70,7 +70,7 @@ class Candidatos
             if ($query->execute([":numero" => $numero, ":nombre" => $nombre, ":apellido" => $apellido, ":tipo" => $tipo, ":genero" => $genero, ":localidad" => $localidad, ":partido" => $partido])) {
 
                 $array = [
-                    "Nuevo_candidato" => [
+                    "Nuevo_Candidato" => [
                         "No. Documento" => $numero,
                         "Nombre" => $nombre,
                         "Apellido" => $apellido,
