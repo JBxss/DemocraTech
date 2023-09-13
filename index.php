@@ -5,7 +5,7 @@ require 'classes/Candidatos.php';
 require 'classes/Votantes.php';
 require 'classes/Votos.php';
 
-Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
+Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=APIVotaciones', 'root', ''));
 
 $candidatos = new Candidatos();
 $votantes = new Votantes();
